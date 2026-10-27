@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import type { CookieOptions } from "@supabase/ssr";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -9,7 +10,9 @@ export async function GET(request: Request) {
   const origin = url.origin;
 
   if (!code) {
-    return NextResponse.redirect(new URL("/login?error=missing_code", origin));
+    return NextResponse.redirect(
+      new URL("/login?error=missing_code", origin)
+    );
   }
 
   const cookieStore = await cookies();
@@ -23,16 +26,16 @@ export async function GET(request: Request) {
           return cookieStore.getAll();
         },
         setAll(
-  cookiesToSet: {
-    name: string;
-    value: string;
-    options?: import("next/dist/compiled/@edge-runtime/cookies").CookieListItem;
-  }[]
-) {
-  cookiesToSet.forEach(({ name, value, options }) => {
-    cookieStore.set(name, value, options);
-  });
-},
+          cookiesToSet: {
+            name: string;
+            value: string;
+            options: CookieOptions;
+          }[]
+        ) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        },
       },
     }
   );
@@ -40,7 +43,9 @@ export async function GET(request: Request) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(new URL("/login?error=auth_callback", origin));
+    return NextResponse.redirect(
+      new URL("/login?error=auth_callback", origin)
+    );
   }
 
   return NextResponse.redirect(new URL("/", origin));
