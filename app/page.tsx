@@ -1,11 +1,11 @@
-import Link from "next/link";
+
 
 export default function Home() {
   return (
     <main className="page">
       <header className="topbar">
         <div className="brand"><span className="seed">✳</span><span>Un Grain de Folie</span></div>
-        <span className="pill">La communauté d'entraide</span>
+        <span className="pill">La communauté d&apos;entraide</span>
       </header>
 
       <section className="hero">
@@ -13,8 +13,8 @@ export default function Home() {
           <p className="pill" style={{display:"inline-block", marginBottom:18}}>Des échanges autrement</p>
           <h1>Les talents circulent.<br />Les liens se créent.</h1>
           <p className="lead">
-            Un Grain de Folie est un espace d'échange entre membres, où chacun peut proposer
-            un coup de main, partager un savoir-faire et recevoir de l'aide grâce aux Graines.
+            Un Grain de Folie est un espace d&apos;échange entre membres, où chacun peut proposer
+            un coup de main, partager un savoir-faire et recevoir de l&apos;aide grâce aux Graines.
           </p>
           <p className="small">Application en préparation — accès réservé aux membres invités.</p>
         </div>
@@ -31,7 +31,7 @@ export default function Home() {
 
       <section className="section grid">
         <article className="tile"><div className="emoji">🤝</div><h3>Proposer son aide</h3><p>Partagez vos compétences, votre temps ou un service utile à la communauté.</p></article>
-        <article className="tile"><div className="emoji">🌱</div><h3>Échanger en confiance</h3><p>Le montant est convenu à l'avance et l'échange est confirmé par les deux membres.</p></article>
+        <article className="tile"><div className="emoji">🌱</div><h3>Échanger en confiance</h3><p>Le montant est convenu à l&apos;avance et l&apos;échange est confirmé par les deux membres.</p></article>
         <article className="tile"><div className="emoji">🧭</div><h3>Faire vivre le collectif</h3><p>Un réseau privé où les besoins et les savoir-faire se rencontrent, sans conversion en euros.</p></article>
       </section>
 
