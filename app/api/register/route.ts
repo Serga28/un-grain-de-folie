@@ -32,10 +32,11 @@ export async function POST(request: Request) {
     }
 
     const { data: reservation, error: reserveError } =
-      await supabaseAdmin.rpc("reserve_invitation", {
-        p_code: code,
-        p_email: email,
-      });
+      await supabaseAdmin.rpc("finalize_invitation", {
+  p_reservation_id: reservationId,
+  p_user_id: userId,
+  p_email: email,
+});
 
     if (reserveError) {
       console.error("Erreur de réservation :", reserveError);
