@@ -27,11 +27,15 @@ export default function LoginPage() {
       setMessage(
         "Si cette adresse peut se connecter, un lien de connexion va être envoyé par e-mail."
       );
-    } catch {
-      setMessage(
-        "Impossible d'envoyer le lien pour le moment. Vérifie la configuration Supabase et réessaie."
-      );
-    } finally {
+    } catch (error) {
+  console.error("Erreur de connexion Supabase :", error);
+
+  setMessage(
+    error instanceof Error
+      ? `Erreur : ${error.message}`
+      : "Une erreur inconnue est survenue."
+  );
+} finally {
       setLoading(false);
     }
   }
