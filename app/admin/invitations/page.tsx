@@ -33,12 +33,15 @@ export default function InvitationsPage() {
       setExpiration(invitation.expires_at);
       setMessage("Invitation créée avec succès.");
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? `Erreur : ${error.message}`
-          : "Impossible de créer cette invitation."
-      );
-    } finally {
+  console.error("Erreur création invitation :", error);
+
+  const details =
+    typeof error === "object" && error !== null
+      ? JSON.stringify(error)
+      : String(error);
+
+  setMessage(`Erreur détaillée : ${details}`);
+} finally {
       setLoading(false);
     }
   }
