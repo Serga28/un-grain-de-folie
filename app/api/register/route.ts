@@ -10,10 +10,12 @@ export async function POST(request: Request) {
 
     const code =
       typeof body.code === "string" ? body.code.trim() : "";
+
     const email =
       typeof body.email === "string"
         ? body.email.trim().toLowerCase()
         : "";
+
     const password =
       typeof body.password === "string" ? body.password : "";
 
@@ -26,20 +28,23 @@ export async function POST(request: Request) {
 
     if (password.length < 12) {
       return NextResponse.json(
-        { error: "Le mot de passe doit contenir au moins 12 caractères." },
+        {
+          error: "Le mot de passe doit contenir au moins 12 caractères.",
+        },
         { status: 400 }
       );
     }
 
+    // Réserver l'invitation
     const { data: reservation, error: reserveError } =
-      await supabaseAdmin.rpc("finalize_invitation", {
-  p_reservation_id: reservationId,
-  p_user_id: userId,
-  p_email: email,
-});
+      await supabaseAdmin.rpc("reserve_invitation", {
+        p_code: code,
+        p_email: email,
+      });
 
     if (reserveError) {
       console.error("Erreur de réservation :", reserveError);
+
       return NextResponse.json(
         { error: "Impossible de vérifier cette invitation." },
         { status: 500 }
@@ -55,6 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Créer le compte
     const { data: userData, error: createError } =
       await supabaseAdmin.auth.admin.createUser({
         email,
@@ -70,21 +76,29 @@ export async function POST(request: Request) {
       });
 
       return NextResponse.json(
-        { error: "Impossible de créer ce compte. Vérifie l'adresse e-mail." },
+        {
+          error: "Impossible de créer ce compte. Vérifie l'adresse e-mail.",
+        },
         { status: 400 }
       );
     }
 
+    // Récupérer l'identifiant du nouveau membre
     const userId = userData.user.id;
 
+    // Valider définitivement l'invitation
     const { data: finalized, error: finalizeError } =
       await supabaseAdmin.rpc("finalize_invitation", {
         p_reservation_id: reservationId,
         p_user_id: userId,
+        p_email: email,
       });
 
     if (finalizeError || finalized !== true) {
-      console.error("Erreur de validation de l'invitation :", finalizeError);
+      console.error(
+        "Erreur de validation de l'invitation :",
+        finalizeError
+      );
 
       await supabaseAdmin.auth.admin.deleteUser(userId);
 
@@ -100,7 +114,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Compte créé avec succès. Tu peux maintenant te connecter.",
+      message:
+        "Compte créé avec succès. Tu peux maintenant te connecter.",
     });
   } catch (error) {
     console.error("Erreur d'inscription :", error);
