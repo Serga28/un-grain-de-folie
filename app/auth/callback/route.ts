@@ -1,21 +1,20 @@
 
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import type { CookieOptions } from "@supabase/ssr";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const origin = url.origin;
 
   if (!code) {
     return NextResponse.redirect(
-      new URL("/login?error=missing_code", origin)
+      new URL("/login?error=missing_code", url.origin)
     );
   }
 
-  const cookieStore = await cookies();
+  let response = NextResponse.redirect(
+    new URL("/mon-compte", url.origin)
+  );
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,17 +22,21 @@ export async function GET(request: Request) {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll();
+          return request.headers
+            .get("cookie")
+            ?.split("; ")
+            .filter(Boolean)
+            .map((cookie) => {
+              const separator = cookie.indexOf("=");
+              return {
+                name: cookie.substring(0, separator),
+                value: decodeURIComponent(cookie.substring(separator + 1)),
+              };
+            }) ?? [];
         },
-        setAll(
-          cookiesToSet: {
-            name: string;
-            value: string;
-            options: CookieOptions;
-          }[]
-        ) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
+            response.cookies.set(name, value, options);
           });
         },
       },
@@ -44,9 +47,9 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL("/login?error=auth_callback", origin)
+      new URL("/login?error=auth_callback", url.origin)
     );
   }
 
-  return NextResponse.redirect(new URL("/", origin));
+  return response;
 }
