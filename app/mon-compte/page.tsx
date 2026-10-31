@@ -34,7 +34,7 @@ export default function MonCompte() {
   if (!email) {
     return (
       <main className="page">
-        <h1>Vous n'êtes pas connecté</h1>
+        <h1>Vous n&apos;êtes pas connecté</h1>
         <a href="/login">Se connecter</a>
       </main>
     );
