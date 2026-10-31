@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     );
   }
 
-  let response = NextResponse.redirect(
+  const response = NextResponse.redirect(
     new URL("/mon-compte", url.origin)
   );
 
