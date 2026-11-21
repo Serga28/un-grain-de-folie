@@ -68,13 +68,13 @@ export default function RegisterPage() {
       </h2>
 
       <p className="mt-2 text-gray-600">
-        Entre ton code d'invitation pour créer ton compte.
+        Entre ton code d&apos;invitation pour créer ton compte.
       </p>
 
       <form onSubmit={register} className="mt-6 space-y-4">
         <div>
           <label htmlFor="code" className="block font-medium">
-            Code d'invitation
+            Code d&apos;invitation
           </label>
           <input
             id="code"
